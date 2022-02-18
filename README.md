@@ -160,31 +160,40 @@ You can also download via awscli which can be installed via
 from "https://ewels.github.io/AWS-iGenomes/".  Then, run the command with
 modified target folder
 ```
-aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/GATK/GRCh38/ ./ngi-igenomes/igenomes/Homo_sapiens/GATK/GRCh38/
+aws s3 --no-sign-request --region eu-west-1 sync \
+    s3://ngi-igenomes/igenomes/Homo_sapiens/GATK/GRCh38/ \
+    ./ngi-igenomes/igenomes/Homo_sapiens/GATK/GRCh38/
 ```
 
-2. conda environment for the pipeline and nextflow itself:
+2. git clone the repo and checkout `igs` branch
+```
+git clone git@github.com:umb-oconnorgroup/sarek.git
+cd sarek
+git checkout igs
+```
+
+3. conda environment for the pipeline and nextflow itself:
 
 ```
-mamba env create -f ~/.nextflow/assets/nf-core/sarek/environment.yml
+mamba env create -f environment.yml
 conda deactivate
 mamba activate nf-core-sarek-2.7.1
 mamba install nextflow
 ```
 
-3. Prepare input.tsv file
+4. Prepare input.tsv file
 
 Follow the sarek official documentation
 
-4. Run the pipeline:
+5. Run the pipeline:
 
 The pipeline do not do joint call. Our strategy is to use the sarek pipeline to
 generate GVCF file and use a different pipeline to run joint calling. So here,
 we will just need run the pipeline to the step of haplotypecaller by using
 `--tools haplotypecaller`. 
 
-Make sure you start nextflow on a computing node (instead of a login node) by
-using `qlogin -P toconnor-lab -q interactive.q -l mem_free=10G` if you are on 
+Make sure that you start nextflow on a computing node (instead of a login node) by
+using, e.g.  `qlogin -P toconnor-lab -q interactive.q -l mem_free=10G` if you are on 
 a login node like `thanos`.
 
 Also, make sure to use the profile `sge` to distribute the tasks
@@ -193,5 +202,8 @@ run the pipeline before, you can use `-resume` to skip the finished tasks and
 continue on new or unfinished tasks.
 
 ```
-nextflow run main.nf -profile sge -resume --input fq_map.tsv --igenomes_base ./ngi-igenomes/igenomes --tools haplotypecaller
+nextflow run main.nf -profile sge -resume \
+    --input fq_map.tsv \
+    --igenomes_base ./ngi-igenomes/igenomes \
+    --tools haplotypecaller
 ```
