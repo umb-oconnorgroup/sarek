@@ -1844,6 +1844,8 @@ process HaplotypeCaller {
     label 'memory_singleCPU_task_sq'
     label 'cpus_2'
 
+    publishDir "${params.outdir}/gvcf/${intervalBed.baseName}", mode: params.publish_dir_mode
+
     tag "${idSample}-${intervalBed.baseName}"
 
     input:
@@ -1857,6 +1859,7 @@ process HaplotypeCaller {
     output:
         set val("HaplotypeCallerGVCF"), idPatient, idSample, file("${intervalBed.baseName}_${idSample}.g.vcf") into gvcfHaplotypeCaller
         set idPatient, idSample, file(intervalBed), file("${intervalBed.baseName}_${idSample}.g.vcf") into gvcfGenotypeGVCFs
+        file('*.idx') into gvcfIndex
 
     when: 'haplotypecaller' in tools
 
