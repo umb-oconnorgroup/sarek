@@ -180,6 +180,21 @@ conda deactivate
 mamba activate nf-core-sarek-2.7.1
 mamba install nextflow
 ```
+NOTE: Once the environment is setup, you will have to update the
+`nextflow.config` to specify the full path to this environemnt in following line
+so that the pipeline knows where to find the existing environment.
+
+```
+        conda = "/path/to/envs/nf-core-sarek-2.7.1"
+```
+You can get the full path by
+`conda env list | grep nf-core-sarek-2.7.1`
+
+
+There are also other ways of specifying conda environment, see
+[here](https://www.nextflow.io/docs/latest/conda.html#use-conda-environment-files).
+Personally, I like the above one (specifying the full path to exisiting environment).
+
 
 4. Prepare input.tsv file
 
